@@ -113,6 +113,8 @@ class ToDoList:
                     self.get_display_title(num, complete)
                     ])
             table.align = 'l'
+            print()
             print(table)
+            print()
         else:
             print("No tasks to display.")
