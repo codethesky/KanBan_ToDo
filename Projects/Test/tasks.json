@@ -1,0 +1,34 @@
+[
+    {
+        "title": "Fix the title to have closer spaces",
+        "status": "New"
+    },
+    {
+        "title": "Add Project capabilities",
+        "status": "Complete"
+    },
+    {
+        "title": "Display the tasks",
+        "status": "On Hold"
+    },
+    {
+        "title": "Delete tasks",
+        "status": "On Hold"
+    },
+    {
+        "title": "Stage 2",
+        "status": "New"
+    },
+    {
+        "title": "Stage 3",
+        "status": "On Hold"
+    },
+    {
+        "title": "Another great test",
+        "status": "Pending"
+    },
+    {
+        "title": "Update number menu",
+        "status": "Pending"
+    }
+]
