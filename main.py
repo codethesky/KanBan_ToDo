@@ -58,7 +58,7 @@ def task_menu(proj):
         print("4. Display Tasks")
         print("5. Exit Project")
 
-        choice = input("\n\nEnter your choice: \n")
+        choice = input("\n\nEnter your choice: ")
 
         if choice == '1':
             title = input("Enter task title or select enter to cancel: ")
