@@ -3,6 +3,8 @@ import os
 from project import Project
 
 STATUS = ["New", "Pending", "On Hold", "Complete"]
+DETAIL = ["title", "status", "description", "preconditions", "reproduction_steps", "actual", "expected", "priority"]
+CLS = "clear"
 
 def display_projects(proj):
     proj_list = proj.get_all_projects()
@@ -50,13 +52,14 @@ def task_menu(proj):
     todo_list = ToDoList(task_location)
     #TODO: Add a choice to Open a Task. Which will open a page with the task details allowing for more indepth task details to be added.
     while True:
-        os.system('cls')
+        os.system(CLS)
         set_title("Task Manager", proj.project)
         print("1. Add Task")
-        print("2. Delete Task")
-        print("3. Change Task Status")
-        print("4. Display Tasks")
-        print("5. Exit Project")
+        print("2. Open Task")
+        print("3. Delete Task")
+        print("4. Change Task Status")
+        print("5. Display Tasks")
+        print("6. Exit Project")
 
         choice = input("\n\nEnter your choice: ")
         #TODO: Add a details field on the add_task Json. The details field will have a prebuilt details object with null fields (ex. description, preconditions, reproduction steps, etc.)
@@ -65,10 +68,46 @@ def task_menu(proj):
             status_selection = input(f"Enter task status ((1){STATUS[0]}/(2){STATUS[1]}/(3){STATUS[2]}/(4){STATUS[3]}) or select enter to cancel: ")
             status_selection = get_status_selection(status_selection)
             if title != '' and status_selection != '':
-                todo_list.add_task({'title': title, 'status': status_selection})
+                todo_list.add_task({'title': title, 'status': status_selection, 'description': '', 'preconditions': '', 'reproduction_steps': '', 'actual': '', 'expected': '', 'priority': ''})
                 todo_list.display_tasks()
                 print("Task added successfully.")
         elif choice == '2':
+            todo_list.display_tasks()
+            task_index = int(input("Enter task index to open for editing or '0' to cancel: ")) - 1
+            #TODO: Test this functionality
+            if task_index >= 0:
+                editing_task = True
+                while editing_task:
+                    os.system(CLS)
+                    set_title("Task Editor", proj.project)
+                    todo_list.display_task_details(task_index)
+                    print("1. Title")
+                    print("2. Status")
+                    print("3. Description")
+                    print("4. Preconditions")
+                    print("5. Reproduction Steps")
+                    print("6. Actual")
+                    print("7. Expected")
+                    print("8. Priority")
+                    print("0. Exit Task Editor")
+
+                    task_choice = input("\n\nEnter the task detail to edit: ")
+                    if task_choice == '0' or task_choice == '' or int(task_choice) > 8:
+                        editing_task = False
+                        cont = input("\n\nUser has requested to exit task editor. Select enter to exit. . .")
+                    else:
+                        task_choice = int(task_choice) - 1
+                        print(f"task_choice = {task_choice}")
+                        new_detail = input(f"\nEnter a new {DETAIL[task_choice]} or select Enter to cancel: ")
+                        if new_detail != '':
+                            todo_list.change_detail(DETAIL[task_choice], task_index, new_detail)
+                            os.system(CLS)
+                            todo_list.display_task_details(task_index)
+                            print(f"task_choice= {task_choice}")
+                            cont = input("\n\nSUCCESS: Select enter to continue. . . ")
+                        else:
+                            cont = input("\n\nCANCELLED: Select enter to continue. . .")
+        elif choice == '3':
             todo_list.display_tasks()
             task_index = int(input("Enter task index to delete or '0' to cancel: ")) - 1
             if task_index >= 0:
@@ -77,7 +116,7 @@ def task_menu(proj):
                 cont = input("\n\nSUCCESS: Select enter to continue. . .")
             else:
                 cont = input("\n\nCANCELLED: Select enter to continue. . .")
-        elif choice == '3':
+        elif choice == '4':
             todo_list.display_tasks()
             task_index = int(input("Enter task index to change status or '0' to cancel: ")) - 1
             new_status = input(f"Enter new status ((1){STATUS[0]}/(2){STATUS[1]}/(3){STATUS[2]}/(4){STATUS[3]}) or select enter to cancel: ")
@@ -88,10 +127,10 @@ def task_menu(proj):
                 cont = input("\n\nSUCCESS: Select enter to continue. . .")
             else:
                 cont = input("\n\nCANCELLED: Select enter to continue. . .")
-        elif choice == '4':
+        elif choice == '5':
             todo_list.display_tasks()
             cont = input("\n\nSelect enter to continue. . . ")
-        elif choice == '5':
+        elif choice == '6':
             proj.clear_project()
             print("Exiting...")
             break
@@ -103,7 +142,7 @@ def main():
     proj = Project()
 
     while running:
-        os.system('cls')
+        os.system(CLS)
         set_title("Project Manager")
         print("1. Open a project")
         print("2. Create a project")
@@ -112,7 +151,7 @@ def main():
         choice = input("\n\nEnter your choice: ")
 
         if choice == '1':
-            os.system('cls')
+            os.system(CLS)
             set_title("Project List")
             display_projects(proj)
             project_index = int(input("Enter project to open or 0 for none: ")) - 1
@@ -121,7 +160,7 @@ def main():
                 selection = get_project_selection(proj, project_index)
                 proj.open_project(selection)
         if choice == '2':
-            os.system('cls')
+            os.system(CLS)
             set_title("Create A Project")
             display_projects(proj)
             project_name = input("Enter a name for the new project or Enter to cancel: ")
@@ -130,7 +169,7 @@ def main():
                     print(f'Failed to create project {project_name}!')
                     print('System Failure: Please try again. . .')
         if choice == '3':
-            os.system('cls')
+            os.system(CLS)
             set_title("Delete A Project")
             display_projects(proj)
             project_index = int(input("Enter project to delete or '0' to cancel: ")) - 1
@@ -142,7 +181,7 @@ def main():
                     print(f'Failed to delete project {selection}!')
         if choice == '4':
             running = False
-            os.system('cls')
+            os.system(CLS)
            
         if proj.project_is_open():
             task_menu(proj)

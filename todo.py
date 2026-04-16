@@ -65,6 +65,17 @@ class ToDoList:
         self.save_tasks()
         print('Task has been deleted!')
 
+    # detail = {title, status, description, preconditions, reproduction_steps, actual, expected, priority}
+    # task_index = index of task being update
+    # new_detail = Message from user that is being save on the particulat task detail
+    def change_detail(self, detail, task_index, new_detail):
+        task_index += 1
+        task_index = self.get_task_index_from_display_selection(task_index)
+        if task_index is not None:
+            self.tasks[task_index][detail] = new_detail
+        self.save_tasks()
+        print(f"Task {detail} changed successfully.")
+
     def change_status(self, task_index, new_status):
         task_index += 1
         task_index = self.get_task_index_from_display_selection(task_index)
@@ -73,12 +84,24 @@ class ToDoList:
         self.save_tasks()
         print("Task status changed successfully.")
 
+    #TODO: Build a get_task which will return all task fields 
+    def get_task(self, task_index):
+        task_index += 1
+        task_index = self.get_task_index_from_display_selection(task_index)
+        if task_index is not None:
+            return self.tasks[task_index]
+        return task_index
+
     def get_status_list(self, status) -> list:
         if not self.tasks:
             return []
         status_list = []
         for task in self.tasks:
             if task['status'] == status:
+                #TODO: Test this function. Added below 3 lines of tList for appending priorities to the ToDo titles. orignal append was task['title'], not tList
+                #tList = task['title']
+                #if task['priority'] != '':
+                #    tList = f"{task['title']} ({task['priority']})"
                 status_list.append(task['title'])
         return status_list
 
@@ -120,5 +143,16 @@ class ToDoList:
             print("No tasks to display.")
 
     #TODO: Create a function to open a task, which will diplay that particular tasks details  
+    def display_task_details(self, task_index):
+        task = self.get_task(task_index)
+        if task is not None:
+            print(f"\tTask Title: {task['title']}\n\tStatus: {task['status']}\n\tPriority: {task['priority']}\n\n")
+            print(f"\tDescription: {task['description']}\n\n\tPreconditions: {task['preconditions']}\n\n\tReproduction Steps: {task['reproduction_steps']}\n\n")
+            print(f"\tActual: {task['actual']}\n\n\tExpected: {task['expected']}\n\n")
+            print("--------------------------------------------------------------------------------\n\n")
+        else:
+            print("ALERT: Task details were not found.\n\n")
+
+
     #TODO: Create a function to get a tasks details 
     #TODO: Create a function to save task details/update task details 
