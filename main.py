@@ -50,7 +50,6 @@ def task_menu(proj):
     proj_location = proj.get_project_location(working_project)
     task_location = proj.join_file_path(proj_location, 'tasks.json')
     todo_list = ToDoList(task_location)
-    #TODO: Add a choice to Open a Task. Which will open a page with the task details allowing for more indepth task details to be added.
     while True:
         os.system(CLS)
         set_title("Task Manager", proj.project)
@@ -62,7 +61,6 @@ def task_menu(proj):
         print("6. Exit Project")
 
         choice = input("\n\nEnter your choice: ")
-        #TODO: Add a details field on the add_task Json. The details field will have a prebuilt details object with null fields (ex. description, preconditions, reproduction steps, etc.)
         if choice == '1':
             title = input("Enter task title or select enter to cancel: ")
             status_selection = input(f"Enter task status ((1){STATUS[0]}/(2){STATUS[1]}/(3){STATUS[2]}/(4){STATUS[3]}) or select enter to cancel: ")
@@ -74,7 +72,6 @@ def task_menu(proj):
         elif choice == '2':
             todo_list.display_tasks()
             task_index = int(input("Enter task index to open for editing or '0' to cancel: ")) - 1
-            #TODO: Test this functionality
             if task_index >= 0:
                 editing_task = True
                 while editing_task:

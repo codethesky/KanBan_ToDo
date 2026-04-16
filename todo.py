@@ -84,7 +84,6 @@ class ToDoList:
         self.save_tasks()
         print("Task status changed successfully.")
 
-    #TODO: Build a get_task which will return all task fields 
     def get_task(self, task_index):
         task_index += 1
         task_index = self.get_task_index_from_display_selection(task_index)
@@ -99,6 +98,7 @@ class ToDoList:
         for task in self.tasks:
             if task['status'] == status:
                 #TODO: Test this function. Added below 3 lines of tList for appending priorities to the ToDo titles. orignal append was task['title'], not tList
+                # Below lines work on initial display table, but when priority is listed it breaks the task details from being displayed in task editor
                 #tList = task['title']
                 #if task['priority'] != '':
                 #    tList = f"{task['title']} ({task['priority']})"
@@ -142,7 +142,6 @@ class ToDoList:
         else:
             print("No tasks to display.")
 
-    #TODO: Create a function to open a task, which will diplay that particular tasks details  
     def display_task_details(self, task_index):
         task = self.get_task(task_index)
         if task is not None:
@@ -153,6 +152,3 @@ class ToDoList:
         else:
             print("ALERT: Task details were not found.\n\n")
 
-
-    #TODO: Create a function to get a tasks details 
-    #TODO: Create a function to save task details/update task details 
