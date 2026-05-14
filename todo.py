@@ -1,11 +1,15 @@
 import json
-from prettytable import PrettyTable
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
 
 STATUS = ["New", "Pending", "On Hold", "Complete"]
 DISPLAY_COUNT = 0
 
+console = Console()
+
+
 class ToDoList:
-    # filename needs to have complete path as well
     def __init__(self, filename):
         self.filename = filename
         self.load_tasks()
@@ -65,9 +69,6 @@ class ToDoList:
         self.save_tasks()
         print('Task has been deleted!')
 
-    # detail = {title, status, description, preconditions, reproduction_steps, actual, expected, priority}
-    # task_index = index of task being update
-    # new_detail = Message from user that is being save on the particulat task detail
     def change_detail(self, detail, task_index, new_detail):
         task_index += 1
         task_index = self.get_task_index_from_display_selection(task_index)
@@ -97,11 +98,6 @@ class ToDoList:
         status_list = []
         for task in self.tasks:
             if task['status'] == status:
-                #TODO: Test this function. Added below 3 lines of tList for appending priorities to the ToDo titles. orignal append was task['title'], not tList
-                # Below lines work on initial display table, but when priority is listed it breaks the task details from being displayed in task editor
-                #tList = task['title']
-                #if task['priority'] != '':
-                #    tList = f"{task['title']} ({task['priority']})"
                 status_list.append(task['title'])
         return status_list
 
@@ -120,8 +116,11 @@ class ToDoList:
         if self.tasks:
             global DISPLAY_COUNT
             DISPLAY_COUNT = 0
-            table = PrettyTable()
-            table.field_names = STATUS
+            table = Table(show_header=True, header_style="bold")
+            table.add_column("New", style="cyan", no_wrap=True)
+            table.add_column("Pending", style="yellow", no_wrap=True)
+            table.add_column("On Hold", style="red", no_wrap=True)
+            table.add_column("Complete", style="green", no_wrap=True)
             new = self.get_status_list(STATUS[0])
             pending = self.get_status_list(STATUS[1])
             on_hold = self.get_status_list(STATUS[2])
@@ -129,26 +128,38 @@ class ToDoList:
             count = self.get_max_length(new, pending, on_hold, complete)
 
             for num in range(count):
-                table.add_row([
+                table.add_row(
                     self.get_display_title(num, new),
                     self.get_display_title(num, pending),
                     self.get_display_title(num, on_hold),
                     self.get_display_title(num, complete)
-                    ])
-            table.align = 'l'
-            print()
-            print(table)
-            print()
+                )
+            console.print()
+            console.print(table)
+            console.print()
         else:
-            print("No tasks to display.")
+            console.print("[yellow]No tasks to display.[/yellow]")
 
     def display_task_details(self, task_index):
         task = self.get_task(task_index)
         if task is not None:
-            print(f"\tTask Title: {task['title']}\n\tStatus: {task['status']}\n\tPriority: {task['priority']}\n\n")
-            print(f"\tDescription: {task['description']}\n\n\tPreconditions: {task['preconditions']}\n\n\tReproduction Steps: {task['reproduction_steps']}\n\n")
-            print(f"\tActual: {task['actual']}\n\n\tExpected: {task['expected']}\n\n")
-            print("--------------------------------------------------------------------------------\n\n")
-        else:
-            print("ALERT: Task details were not found.\n\n")
+            status_color = {
+                "New": "cyan",
+                "Pending": "yellow",
+                "On Hold": "red",
+                "Complete": "green"
+            }.get(task['status'], "white")
 
+            content = (
+                f"[bold]Task Title:[/bold] {task['title']}\n"
+                f"[bold]Status:[/bold] [{status_color}]{task['status']}[/{status_color}]\n"
+                f"[bold]Priority:[/bold] {task['priority'] or '[dim]None[/dim]'}\n\n"
+                f"[bold]Description:[/bold] {task['description'] or '[dim]None[/dim]'}\n\n"
+                f"[bold]Preconditions:[/bold] {task['preconditions'] or '[dim]None[/dim]'}\n\n"
+                f"[bold]Reproduction Steps:[/bold] {task['reproduction_steps'] or '[dim]None[/dim]'}\n\n"
+                f"[bold]Actual:[/bold] {task['actual'] or '[dim]None[/dim]'}\n\n"
+                f"[bold]Expected:[/bold] {task['expected'] or '[dim]None[/dim]'}"
+            )
+            console.print(Panel(content, title="Task Details", border_style="bright_blue"))
+        else:
+            console.print("[bold red]ALERT: Task details were not found.[/bold red]")
